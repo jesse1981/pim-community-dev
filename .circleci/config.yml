@@ -84,7 +84,7 @@ jobs:
           - run:
                 name: Load archived docker image
                 command: docker load -i php-pim-image.tar
-          -   run:
+          - run:
                 name: Install Pcov extension
                 command: |
                     docker-compose exec fpm sh -c "wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -"
@@ -186,7 +186,7 @@ jobs:
                 paths:
                     - project/var/coverage
 
-back_phpunit_end_to_end:
+  back_phpunit_end_to_end:
     machine:
         enabled: true
         docker_layer_caching: true
@@ -279,7 +279,7 @@ back_phpunit_end_to_end:
       - run:
             name: Critical Behat
             command: |
-                TESTFILES=$(docker-compose exec -T fpm vendor/bin/behat --list-scenarios -p legacy -s critical | circleci tests split --split-by=timings)
+                TESTFILES=$(docker-compose run --rm -T php vendor/bin/behat --list-scenarios -p legacy -s critical | circleci tests split --split-by=timings)
 #                .circleci/run_behat.sh critical $TESTFILES
       - run:
           name: Gather Junit test result files in the same directory to improve the render of failing tests
@@ -383,7 +383,6 @@ workflows:
           - back_phpunit:
                 requires:
                     - back_static_and_acceptance
-                    - front_static_acceptance_and_integration
           - back_phpunit_end_to_end:
                 requires:
                     - back_phpunit
@@ -405,9 +404,6 @@ workflows:
       jobs:
           - build_dev
           - back_static_and_acceptance:
-                requires:
-                    - setup
-          - front_static_acceptance_and_integration:
                 requires:
                     - build_dev
           - front_static_acceptance_and_integration:
