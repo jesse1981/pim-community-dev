@@ -258,17 +258,18 @@ jobs:
 
   merge_code_coverage:
       machine:
-          enabled: true
-          docker_layer_caching: true
+#          enabled: true
+#          docker_layer_caching: true
+          image: ubuntu-1604:201903-01
       steps:
           - attach_workspace:
                 at: ~/
           - run:
                 name: Change owner on project dir in order to archive the project into the workspace
                 command: sudo chown -R 1000:1000 ../project
-          - run:
-                name: Start containers
-                command: docker-compose up -d
+#          - run:
+#                name: Start containers
+#                command: docker-compose up -d
           - run:
                 name: Merge Pcov files
                 command: |
